@@ -33,12 +33,6 @@ The project was built with a strict set of constraints and pillars:
 
 ---
 
-## 🚀 Live Demo
-
-> 🔗 [**View Live Site →**](#) *(replace with your GitHub Pages or Netlify link)*
-
----
-
 ## ✅ Features
 
 ### Core Functionality
