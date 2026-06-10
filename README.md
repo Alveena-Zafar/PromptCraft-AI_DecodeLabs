@@ -196,9 +196,11 @@ Building this project reinforced several real-world front-end concepts:
 
 ## 👩‍💻 Author
 
-**DecodeLabs Batch 2026**
+**Alveena Zafar**
 
-> Built as **Full Stack Project 1** — demonstrating mastery of Semantic HTML5, modern CSS architecture, and Vanilla JavaScript before introducing any frameworks.
+PromptCraft AI was designed and developed by Alveena Zafar as part of the DecodeLabs Full Stack Development Program (Batch 2026).
+
+GitHub: https://github.com/Alveena-Zafar
 
 ---
 
@@ -210,6 +212,6 @@ This project is licensed under the **MIT License** — feel free to fork, modify
 
 <div align="center">
 
-Made with ☕ and a lot of `var(--mocha)` &nbsp;|&nbsp; DecodeLabs Full Stack · Batch 2026
+Made with ☕ and a lot of var(--mocha) by Alveena Zafar | DecodeLabs Full Stack Project 1
 
 </div>
