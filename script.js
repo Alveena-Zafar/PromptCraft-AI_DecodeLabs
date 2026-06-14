@@ -30,94 +30,57 @@ document.addEventListener('DOMContentLoaded', () => {
     navMenu.classList.toggle('active');
   });
 
-  // ==================== PROMPT DATA ====================
-  const prompts = {
-
-    study: {
-      beginner:
-        "Explain the concept of variables in programming using simple examples.",
-
-      intermediate:
-        "Create a 7-day study plan for learning Data Structures and Algorithms.",
-
-      advanced:
-        "Analyze the impact of Artificial Intelligence on modern education systems."
-    },
-
-    coding: {
-      beginner:
-        "Write a simple Java program to calculate the area of a rectangle.",
-
-      intermediate:
-        "Build a Java application that manages student records using OOP concepts.",
-
-      advanced:
-        "Design and implement a scalable REST API with authentication and authorization."
-    },
-
-    writing: {
-      beginner:
-        "Write a short paragraph describing your favorite hobby.",
-
-      intermediate:
-        "Draft a professional internship request email to a software company.",
-
-      advanced:
-        "Write a persuasive article discussing the future of Artificial Intelligence."
-    },
-
-    business: {
-      beginner:
-        "Create a simple business idea for a small local startup.",
-
-      intermediate:
-        "Develop a marketing strategy for launching a new mobile application.",
-
-      advanced:
-        "Prepare a comprehensive business growth plan for expanding into international markets."
-    }
-
-  };
-
   // ==================== GENERATOR ====================
-  const generateBtn = document.getElementById('generate-btn');
+const generateBtn = document.getElementById('generate-btn');
+const promptOutput = document.getElementById('prompt-output');
+const promptText = document.getElementById('prompt-text');
+const copyBtn = document.getElementById('copy-btn');
 
-  const promptOutput =
-    document.getElementById('prompt-output');
+let currentGeneratedPrompt = '';
 
-  const promptText =
-    document.getElementById('prompt-text');
-
-  const copyBtn =
-    document.getElementById('copy-btn');
-
-  let currentGeneratedPrompt = '';
-
-  generateBtn.addEventListener('click', () => {
-
-    const category =
-      document.getElementById('category').value;
-
-    const difficulty =
-      document.getElementById('difficulty').value;
+generateBtn.addEventListener('click', async () => {
+    const category = document.getElementById('category').value;
+    const difficulty = document.getElementById('difficulty').value;
 
     if (!category || !difficulty) {
-
-      alert(
-        'Please select both Category and Difficulty'
-      );
-
-      return;
+        alert('Please select both Category and Difficulty');
+        return;
     }
 
-    currentGeneratedPrompt =
-      prompts[category][difficulty];
+    // Button loading state
+    generateBtn.textContent = 'Loading...';
+    generateBtn.disabled = true;
 
-    promptText.textContent =
-      currentGeneratedPrompt;
+    try {
+        // Database se prompt fetch karo
+        const response = await fetch(`http://localhost:3001/api/prompts/${category}`);
+        const data = await response.json();
 
-    promptOutput.classList.remove('hidden');
-  });
+        if (!data.success) {
+            alert('Error fetching prompt. Please try again.');
+            return;
+        }
+const match = data.data.find(p => 
+    p.difficulty === difficulty
+);
+
+if (!match) {
+    alert('No prompt found for this combination.');
+    return;
+}
+
+currentGeneratedPrompt = match.prompt_text;
+        promptText.textContent = currentGeneratedPrompt;
+        promptOutput.classList.remove('hidden');
+
+    } catch (err) {
+        alert('Server not reachable. Make sure backend is running!');
+        console.error(err);
+    } finally {
+        generateBtn.textContent = 'Generate Prompt';
+        generateBtn.disabled = false;
+    }
+});
 
   // ==================== COPY BUTTON ====================
   copyBtn.addEventListener('click', () => {
@@ -140,18 +103,34 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==================== CONTACT FORM ====================
-  document
+document
     .getElementById('contact-form')
-    .addEventListener('submit', (e) => {
+    .addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-      e.preventDefault();
+        const name = document.getElementById('contact-name').value;
+        const email = document.getElementById('contact-email').value;
+        const message = document.getElementById('contact-message').value;
 
-      alert(
-        '✅ Message received! Thank you.'
-      );
+        try {
+            const response = await fetch('http://localhost:3001/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message })
+            });
 
-      e.target.reset();
+            const data = await response.json();
 
+            if (data.success) {
+                alert('✅ Message saved! Thank you.');
+                e.target.reset();
+            } else {
+                alert('❌ Error: ' + data.error);
+            }
+        } catch (err) {
+            alert('Server not reachable. Make sure backend is running!');
+            console.error(err);
+        }
     });
 
 });
